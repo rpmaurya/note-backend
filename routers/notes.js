@@ -3,6 +3,7 @@ const router = express.Router();
 const { body, validationResult } = require('express-validator');
 const Note = require('../models/Note');
 const fetchuser = require('../middleware/fetchuser');
+const multer = require('multer');
 
 //router -1 get all notes using get method required login
 router.get("/fetchnote",fetchuser,async(req,res)=>{
@@ -99,5 +100,42 @@ try {
     res.status(500).send("server internal error");  
 }
 })
+
+//router:- 5 search note using get method ,login are required
+
+router.get ("/searchnote/:key",fetchuser,async(req,res)=>{
+    try {
+        console.log(req.params.key);
+        let searchData = await Note.find({
+            "$or":[
+                {"title":{$regex: req.params.key}},
+                {"subject":{$regex: req.params.key}}
+            ]
+            
+        })
+        res.send(searchData); 
+    } catch (error) {
+        console.error(error.message);
+    res.status(500).send("server internal error");  
+    }
+})
+
+//router:- 6 upload file using post method ,login are required
+const upload = multer({
+    storage: multer.diskStorage({
+        destination: function (req, file, cb) {
+            cb(null, "uploads")
+        },
+        filename: function (req, file, cb) {
+            cb(null, file.fieldname + "-" + Date.now() + ".jpg")
+        }
+    })
+}).single("user_file");
+
+router.post("/uploadfile",fetchuser,upload,async(req,res)=>{
+    res.send("file uploaded");
+})
+
+//vikask@shilshtech.com
 
 module.exports = router;
