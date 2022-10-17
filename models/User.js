@@ -20,11 +20,26 @@ const UserSchema = new mongoose.Schema({
     mobile:Number,
     password:String,
     address:String,
+    otp:String,
+    expireIn:{
+        type:Number,
+        default:0
+      },
+      token: {
+        type:String,
+        default:0,
+      },
+
+    verified: {
+        type: Boolean,
+        default: false,
+      },
     date:{
         type:Date,
         default:Date.now
     }
-})
+}
+)
 
 const UserModels = mongoose.model("user",UserSchema);
 

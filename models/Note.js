@@ -3,10 +3,11 @@ const mongoose = require('mongoose');
 
 
 const NoteSchema = new mongoose.Schema({
-    user:{
+    userId:{
         type:mongoose.Schema.Types.ObjectId,
         ref:'user'
     },
+   
     title:{
         type:String,
         required:true

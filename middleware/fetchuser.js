@@ -1,16 +1,14 @@
 var jwt = require('jsonwebtoken');
 const JWT_SECRET = 'rpmauya@up';
+const User = require('../models/User');
 
 
-
-const fetchuser = (req,res,next)=>{
+const fetchuser = async(req,res,next)=>{
 //get the user from jwt token and add id to req object
-const token =  req.header("auth-token");
-if(!token){
-    res.status(401).send({error:'Please authenticate a using valid token'});
-}
-
 try {
+    const token =  req.header("auth-token");
+const user =  await User.findOne({token:token});
+if(token!= user.token) return res.status(401).send({error:'Please authenticate a using valid token'});
     const data = jwt.verify(token,JWT_SECRET);
     req.user = data.user;
     next();  
